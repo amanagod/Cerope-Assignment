@@ -2,9 +2,33 @@ import { Mail, Lock, User, Eye,EyeOff } from 'lucide-react'; // Icons for the in
 import dressImage from '../assets/dress.jpg';
 import { useState } from 'react';
 import { Link } from "react-router-dom";
+import {apiClient} from "../utils/api.js"
 
-// Import your custom avatar/logo if needed. For the image, I'll use a placeholder.
-// import CeropeLogo from '../assets/cerope-logo.svg';
+const Register =async (data)=>{
+    // const[Loading,setIsLoading]=useState(false);
+
+const { name, email, password, privacyPolicy } = data;
+    // setIsLoading(true);
+
+    try {
+      const response = await apiClient ("/signup",{
+        name,
+        email,
+        password,
+        privacyPolicy,
+      });
+      console.log('Signup response:', response);
+      // navigate('/verify-email');
+      return response;
+    } catch (error) {
+      console.error('Signup error:', error);
+      // alert('Registration failed. Please try again.');
+      throw new Error(error?.message || 'Signup failed');
+    } finally {
+    //   setIsLoading(false);
+    }
+}
+
     const FormInput = ({ icon: Icon, placeholder, type = 'text', error, value, label ,onChange , name }) => {
         const [showPassword, setShowPassword] = useState(false);
         const isPassword = type === 'password';
@@ -114,6 +138,7 @@ const handleSubmit =(e)=>{
     e.preventDefault();
 
     if(!validateform()){return}
+ const result=  Register(formdata);
     console.log(formdata);
 }
 

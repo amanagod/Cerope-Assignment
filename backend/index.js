@@ -1,6 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-const connectDB = require('./models/db.config');
+import express from 'express';
+import cors from 'cors';
+import connectDB from './models/db.config.js';
+import routes from './routes/routes.js';
 
 const app = express();
 
@@ -8,14 +9,19 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Connect to MongoDB
-connectDB();
+(async () => {
+  await connectDB();
 
-// Example route
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
+  // test route
+  app.get('/', (req, res) => {
+    res.send('Hello World!');
+  });
 
-// Start Server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+  // use your routes
+  app.use('/api', routes);
+
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () =>
+    console.log(`Server running on port ${PORT}`)
+  );
+})();
