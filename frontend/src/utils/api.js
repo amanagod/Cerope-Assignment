@@ -1,16 +1,19 @@
-export async function apiClient(endpoint, data) {
-    const BASE_URL =  'http://localhost:5000/api' ;  ////////////add env variable here  
+export async function Post(endpoint, data) {
+    const BASE_URL =   import.meta.env.VITE_BASE_URL?? 'http://localhost:5000/api' ;  ////////////add env variable here  
 const url = `${BASE_URL}${endpoint}`;
 console.log(url);
     try {
+        const headers = {
+            'Content-Type': 'application/json',
+        }
+        const apiKey = import.meta.env.VITE_API_KEY??null;
+      if (apiKey) {
+        headers['X-API-Key'] = apiKey;
+      }
         const response = await fetch(url, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // Add authorization headers here if needed (e.g., Bearer token)
-            },
-            body: JSON.stringify(data),
-            credentials: 'include',
+            headers,
+            body: JSON.stringify(data),           
         });
 
         const resData = await response.json();

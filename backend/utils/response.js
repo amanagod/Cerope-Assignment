@@ -23,7 +23,7 @@ function responseHandler(res, responseData = {}) {
 function errResponseHandler(res, error) {
   return responseHandler(res, {
     message: error instanceof Error ? error.message : "Internal Server Error",
-    status: 500,
+    status: error?.statusCode || 500,
     data: error?.data || null,
     success: false,
     errors: true,

@@ -2,7 +2,7 @@ import { Mail, Lock, User, Eye,EyeOff } from 'lucide-react'; // Icons for the in
 import dressImage from '../assets/dress.jpg';
 import { useState } from 'react';
 import { Link } from "react-router-dom";
-import {apiClient} from "../utils/api.js"
+import {Post} from "../utils/api.js"
 
 const Register =async (data)=>{
     // const[Loading,setIsLoading]=useState(false);
@@ -11,7 +11,7 @@ const { name, email, password, privacyPolicy } = data;
     // setIsLoading(true);
 
     try {
-      const response = await apiClient ("/signup",{
+      const response = await Post("auth/signup",{
         name,
         email,
         password,
@@ -184,7 +184,7 @@ const handleSubmit =(e)=>{
                         Set up your **Cerope Account**
                     </h2>
 
-                    <form className="space-y-4" onSubmit={handleSubmit}  >
+                    <form className="space-y-4" onSubmit={handleSubmit} noValidate preventDefault >
                         {/* Name Input */}
                         <FormInput icon={User} label="Name" placeholder="Name" type="text" name="name"  value={formdata.name} onChange={handleChange} error={errors.name} />
 
