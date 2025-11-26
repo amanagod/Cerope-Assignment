@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
-import { Mail, Lock, LogIn } from 'lucide-react'; 
-import { Link } from "react-router-dom";
+import { Mail, Lock,  Eye,EyeOff } from 'lucide-react'; 
+import { Link ,useNavigate} from "react-router-dom";
 import loginImage from '../assets/Gemini_Generated_Image_zfqxfgzfqxfgzfqx.png'
+import {Post} from "../utils/api.js"
+
+
+
 
 const CeropeLogoIcon = () => (
     <span className="text-xl font-semibold text-white tracking-wider flex items-center gap-1.5">
@@ -15,38 +19,59 @@ const CeropeLogoIcon = () => (
 
 
 // Reusable Input Component (Simplified for Login, does not need password toggling unless explicitly requested)
-const FormInput = ({ icon: Icon, placeholder, type = 'text', error, value, label, onChange, name }) => {
-    return (
-        <div className="w-full">
-            <label className="block text-sm font-medium mb-1 text-gray-700 ">
+    const FormInput = ({ icon: Icon, placeholder, type = 'text', error, value, label ,onChange , name }) => {
+        const [showPassword, setShowPassword] = useState(false);
+        const isPassword = type === 'password';
+        const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
+
+        return (<div className="w-full">
+            <label className="block text-sm font-medium mb-1 text-slate-700 ">
                 {label}
             </label>
+
             <div className="relative">
                 <Icon
-                    className=" absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none"
+                    className=" absolute left-3  top-1/2 -translate-y-1/2  w-5 h-5 text-gray-400 pointer-events-none                            "
                 />
+
                 <input
-                    type={type}
+                    type={inputType}
                     value={value}
-                    name={name}
                     onChange={onChange}
+                    name={name}
                     placeholder={placeholder}
                     className="
-                        w-full pl-12 pr-4 py-3
-                        text-base text-gray-700
-                        bg-white
-                        border border-gray-300
-                        rounded-xl
-                        focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500
-                        placeholder-gray-400
-                        shadow-sm
-                    "
+                                    w-full pl-12 pr-4 py-4
+                                    text-base text-gray-700
+                                    bg-white
+                                    border border-gray-300
+                                    rounded-xl
+                                    focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-pink-500
+                                    placeholder-gray-400
+                                    shadow-sm
+                                "
                 />
+                
+                 {isPassword && (
+          <button
+            type="button"
+            className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? (
+              <Eye size={18} className="text-slate-400" />
+            ) : (
+              <EyeOff size={18} className="text-slate-400" />
+            )}
+          </button>
+        )}
+
+
             </div>
             {error && <div className="text-red-500 text-sm mt-1 ml-5">{error}</div>}
-        </div>
-    );
-};
+
+        </div>)
+    };
 
 
 export default function Login() {
@@ -56,6 +81,7 @@ export default function Login() {
         rememberMe: false
     });
     const [errors, setErrors] = useState({});
+        const navigate = useNavigate();
 
     const handleChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -88,9 +114,27 @@ export default function Login() {
         if (!validateForm()) {
             return;
         }
+        const result=  LogIn(formdata);
         console.log("Login Data:", formdata);
         // Process login here (e.g., API call)
     };
+
+    const LogIn =async (data)=>{
+    try{
+const {  email, password } = data;
+      const response = await Post("auth/login",{
+        email,
+        password
+      });
+      console.log('Login response:', response);
+      navigate('/');
+      return response;
+    }
+    catch(err){
+        throw new Error(err?.message || 'Login failed');
+    }
+}
+
 
     return (
         <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4"
@@ -126,7 +170,7 @@ export default function Login() {
                         Your personalized fashion journey awaits.
                     </p>
 
-                    <form className="space-y-6" onSubmit={handleSubmit} novalidate>
+                    <form className="space-y-6" onSubmit={handleSubmit} noValidate>
                         
                         {/* Email Input */}
                         <FormInput 
