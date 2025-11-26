@@ -33,6 +33,12 @@ userSchema.pre('save',async function(next){
 })
 
 userSchema.methods.MatchPassword = async function(enteredPassword){
+    if(!enteredPassword){
+          throw new Error("Entered password is missing");
+    }
+     if (!this.password) {
+        throw new Error("User password hash not loaded (did you forget .select('+password')?)");
+    }
     return await bcrypt.compare(enteredPassword,this.password);
 }
 

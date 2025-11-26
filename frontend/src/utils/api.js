@@ -13,7 +13,8 @@ console.log(url);
         const response = await fetch(url, {
             method: 'POST',
             headers,
-            body: JSON.stringify(data),           
+            body: JSON.stringify(data),     
+            credentials:true                 // ssee thsi if working 
         });
 
         const resData = await response.json();

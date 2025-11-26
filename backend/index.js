@@ -8,7 +8,7 @@ const app = express();
 // Middleware
 
 app.use(express.json());
-
+app.use(express.urlencoded({ extended: true }));
 var corsOptions = {
   origin: `${process.env.FRONTEND_URL }`, 
 }

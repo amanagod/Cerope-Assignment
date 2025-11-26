@@ -1,13 +1,13 @@
 import { Mail, Lock, User, Eye,EyeOff } from 'lucide-react'; // Icons for the input fields
 import dressImage from '../assets/dress.jpg';
 import { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import {Post} from "../utils/api.js"
 
 const Register =async (data)=>{
     // const[Loading,setIsLoading]=useState(false);
 
-const { name, email, password, privacyPolicy } = data;
+const { name, email, password, privacyPolicy,confirmPassword } = data;
     // setIsLoading(true);
 
     try {
@@ -16,17 +16,16 @@ const { name, email, password, privacyPolicy } = data;
         email,
         password,
         privacyPolicy,
+        confirmPassword
       });
-      console.log('Signup response:', response);
-      // navigate('/verify-email');
+    //   console.log('Signup response:', response);
+       navigate('/login');
       return response;
     } catch (error) {
       console.error('Signup error:', error);
       // alert('Registration failed. Please try again.');
       throw new Error(error?.message || 'Signup failed');
-    } finally {
-    //   setIsLoading(false);
-    }
+    } 
 }
 
     const FormInput = ({ icon: Icon, placeholder, type = 'text', error, value, label ,onChange , name }) => {
@@ -92,6 +91,8 @@ export default function SignUp() {
         privacyPolicy:false
     });
     const [errors, seterrors] = useState({});   ///this work is pending
+    const navigate = useNavigate();
+
     
 
     const handleChange =(e)=>{
@@ -134,11 +135,15 @@ const validateform = () => {
   return Object.keys(errs).length === 0;
 };
 
-const handleSubmit =(e)=>{
+const handleSubmit =async(e)=>{
     e.preventDefault();
 
     if(!validateform()){return}
- const result=  Register(formdata);
+try{
+    const result= await Register(formdata);
+}catch(err){
+    console.log(err);
+}
     console.log(formdata);
 }
 
